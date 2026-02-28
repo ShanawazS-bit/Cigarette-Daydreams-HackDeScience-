@@ -1,25 +1,30 @@
 export interface Issue {
-  line?:    number;
-  col?:     number;
+  line?: number;
+  col?: number;
   severity: 'critical' | 'high' | 'error' | 'warning' | 'info' | 'ok';
-  msg:      string;
-  fix:      string;
+  msg: string;
+  fix: string;
 }
 
 export interface FunctionComplexity {
-  fn:         string;
+  fn: string;
   complexity: number;
-  lines:      number;
-  status:     'ok' | 'medium' | 'high';
+  lines: number;
+  status: 'ok' | 'medium' | 'high';
 }
 
 export interface Report {
-  language:   string;
+  language: string;
   confidence: number;
-  score:      number;
-  grade:      string;
-  bugs:       Issue[];
-  lint:       Issue[];
-  security:   Issue[];
+  score: number;
+  grade: string;
+  bugs: Issue[];
+  lint: Issue[];
+  security: Issue[];
   complexity: FunctionComplexity[];
+  penalty?: any;
+  error?: boolean;
+  isOjass?: boolean;
+  formatted?: string;
+  diff?: any[];
 }

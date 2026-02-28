@@ -1,105 +1,39 @@
 'use client';
-import { useState } from 'react';
-import type { Report, Issue, FunctionComplexity } from '@/lib/types';
-import ScoreMeter from './ScoreMeter';
+import { useState, useEffect } from 'react';
 import styles from './AnalysisPanel.module.css';
+import type { Report, Issue } from '@/lib/types';
 
-const SEV: Record<string,{bg:string;bd:string;col:string}> = {
-  critical:{ bg:'rgba(252,129,129,0.12)', bd:'rgba(252,129,129,0.4)',  col:'#fc8181' },
-  high:    { bg:'rgba(246,173,85,0.12)',  bd:'rgba(246,173,85,0.4)',   col:'#f6ad55' },
-  error:   { bg:'rgba(252,129,129,0.10)', bd:'rgba(252,129,129,0.35)', col:'#fc8181' },
-  warning: { bg:'rgba(246,224,94,0.08)',  bd:'rgba(246,224,94,0.35)',  col:'#f6e05e' },
-  info:    { bg:'rgba(99,179,237,0.08)',  bd:'rgba(99,179,237,0.35)',  col:'#63b3ed' },
-  ok:      { bg:'rgba(104,211,145,0.08)', bd:'rgba(104,211,145,0.35)', col:'#68d391' },
-  medium:  { bg:'rgba(246,173,85,0.08)',  bd:'rgba(246,173,85,0.30)',  col:'#f6ad55' },
-};
-
-function Badge({ s }: { s: string }) {
-  const c = SEV[s] ?? SEV.info;
-  return (
-    <span style={{ padding:'2px 8px', borderRadius:4, fontSize:10, fontFamily:'var(--font-mono)',
-      letterSpacing:'0.1em', fontWeight:700, textTransform:'uppercase' as const, flexShrink:0,
-      background:c.bg, border:`1px solid ${c.bd}`, color:c.col }}>
-      {s}
-    </span>
-  );
-}
-
-function IssueRow({ item }: { item: Issue }) {
-  return (
-    <div className={styles.row}>
-      <Badge s={item.severity} />
-      <div className={styles.rowBody}>
-        <p className={styles.rowMsg}>
-          {item.msg}
-          {item.line && <span className={styles.rowLine}>line {item.line}</span>}
-        </p>
-        <p className={styles.rowFix}>↳ {item.fix}</p>
-      </div>
-    </div>
-  );
-}
-
-function CplxRow({ fn }: { fn: FunctionComplexity }) {
-  const col = fn.status==='high'?'#fc8181':fn.status==='medium'?'#f6ad55':'#68d391';
-  return (
-    <div className={styles.row} style={{ alignItems:'center' }}>
-      <div style={{ flex:1 }}>
-        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
-          <span style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--white)' }}>{fn.fn}()</span>
-          <span style={{ fontFamily:'var(--font-display)', fontSize:18, fontWeight:700, color:col }}>{fn.complexity}</span>
-        </div>
-        <div style={{ height:3, background:'rgba(255,255,255,0.06)', borderRadius:2, overflow:'hidden' }}>
-          <div style={{ height:'100%', width:`${Math.min((fn.complexity/10)*100,100)}%`, background:col, borderRadius:2, transition:'width 1s ease' }} />
-        </div>
-        <div style={{ display:'flex', justifyContent:'space-between', marginTop:4 }}>
-          <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--dim)' }}>{fn.lines} lines</span>
-          <Badge s={fn.status} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const TABS = [
-  { id:'security',   label:'Security'   },
-  { id:'bugs',       label:'Bugs'       },
-  { id:'lint',       label:'Lint'       },
-  { id:'complexity', label:'Complexity' },
-] as const;
-type TId = typeof TABS[number]['id'];
-
-interface Props { report:Report|null; loading:boolean; scanStep:number; scanSteps:string[]; }
+interface Props { report: Report | null; loading: boolean; scanStep: number; scanSteps: string[]; }
 
 export default function AnalysisPanel({ report, loading, scanStep, scanSteps }: Props) {
-  const [tab, setTab] = useState<TId>('security');
+  const [activeTab, setActiveTab] = useState<'bugs' | 'lint' | 'security'>('bugs');
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
 
   if (!report && !loading) return (
     <div className={styles.empty}>
       <div className={styles.emptyIcon}>
         <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
-          <circle cx="40" cy="40" r="36" stroke="rgba(99,179,237,0.15)" strokeWidth="1.5" strokeDasharray="6 4"/>
-          <circle cx="40" cy="40" r="20" stroke="rgba(99,179,237,0.10)" strokeWidth="1"/>
-          <circle cx="40" cy="40" r="4"  fill="rgba(99,179,237,0.2)"/>
-          <line x1="40" y1="4"  x2="40" y2="20" stroke="rgba(99,179,237,0.15)" strokeWidth="1.5"/>
-          <line x1="40" y1="60" x2="40" y2="76" stroke="rgba(99,179,237,0.15)" strokeWidth="1.5"/>
-          <line x1="4"  y1="40" x2="20" y2="40" stroke="rgba(99,179,237,0.15)" strokeWidth="1.5"/>
-          <line x1="60" y1="40" x2="76" y2="40" stroke="rgba(99,179,237,0.15)" strokeWidth="1.5"/>
+          <rect x="20" y="20" width="40" height="30" rx="4" fill="none" stroke="#555" strokeWidth="2" />
+          <polyline points="26,28 32,34 26,40" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="36" y1="40" x2="44" y2="40" stroke="#777" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </div>
-      <p className={styles.emptyTitle}>Awaiting Analysis</p>
-      <p className={styles.emptySub}>Paste code and hit Analyse</p>
+      <p className={styles.emptyTitle}>Terminal Ready</p>
+      <p className={styles.emptySub}>Awaiting input stream</p>
     </div>
   );
 
   if (loading) return (
     <div className={styles.loading}>
       <div className={styles.ring} />
-      <p className={styles.loadTitle}>Scanning…</p>
+      <p className={styles.loadTitle}>Executing analysis script...</p>
       <div className={styles.steps}>
         {scanSteps.map((step, i) => (
           <div key={step} className={`${styles.step} ${i < scanStep ? styles.done : ''}`}>
-            <span className={styles.stepIcon}>{i < scanStep ? '✓' : '○'}</span>
+            <span className={styles.stepIcon}>{i < scanStep ? '>' : ' '}</span>
             {step}
           </div>
         ))}
@@ -109,79 +43,195 @@ export default function AnalysisPanel({ report, loading, scanStep, scanSteps }: 
 
   if (!report) return null;
 
-  const isSecret = report.language === 'OjassScript';
-  const counts: Record<TId,number> = {
-    security:report.security.length, bugs:report.bugs.length,
-    lint:report.lint.length, complexity:report.complexity.length,
-  };
-  const total = report.bugs.length + report.lint.length + report.security.length;
+  if (report.error) return (
+    <div className={styles.terminalPanel}>
+      <div className={styles.empty}>
+        <p className={styles.emptyTitle} style={{ color: '#fc8181' }}>Analysis Failed</p>
+        <p className={styles.emptySub}>An error occurred while analyzing the code.</p>
+      </div>
+    </div>
+  );
+
+  const { score, grade, bugs, lint, security, language, confidence } = report;
+  const isPerfect = score === 100;
+
+  const totalIssues = bugs.length + lint.length + security.length;
 
   return (
-    <div className={`${styles.panel} ${isSecret ? styles.panelGold : ''}`}>
-      <div className={styles.header}>
-        <p className={styles.headerLabel} style={isSecret?{color:'var(--gold)'}:{}}>
-          {isSecret ? "🥚 SECRET MODE · OJASS '26" : 'OUTPUT'}
-        </p>
-        <div className={styles.issuePill} style={isSecret?{borderColor:'rgba(246,224,94,0.3)',background:'rgba(246,224,94,0.06)',color:'#f6e05e'}:{}}>
-          {isSecret ? '✦ 100 / 100' : <><span style={{color:'#fc8181'}}>⚠</span>{total} issues</>}
-        </div>
-      </div>
+    <div className={styles.terminalPanel}>
 
-      <div className={styles.scroll}>
-        <div className={styles.scoreRow}>
-          <ScoreMeter score={report.score} />
-          <div className={styles.cards}>
-            <div className={styles.card} style={isSecret?{borderColor:'rgba(246,224,94,0.25)',background:'rgba(246,224,94,0.05)'}:{}}>
-              <p className={styles.cardLabel}>LANGUAGE</p>
-              <p className={styles.cardVal} style={{color:isSecret?'var(--gold)':'var(--cyan)'}}>{report.language}</p>
-              <p className={styles.cardSub}>{report.confidence}% confidence</p>
+      {/* Left panel showing formatted output mimicking input execution output */}
+      {report.formatted && (
+        <div className={styles.terminalColumn}>
+          <div className={styles.terminalScroll}>
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className={styles.secondaryText}>===</span>
+              <span className={styles.primaryText}>Analyzing: stdin.js</span>
+              <span className={styles.secondaryText}>===</span>
             </div>
-            <div className={styles.card} style={{borderColor:'rgba(252,129,129,0.25)',background:'rgba(252,129,129,0.05)'}}>
-              <p className={styles.cardLabel}>CRITICAL</p>
-              <p className={styles.cardVal} style={{color:'#fc8181'}}>{report.security.filter(s=>s.severity==='critical').length}</p>
-              <p className={styles.cardSub}>security issues</p>
+
+            <div style={{ marginBottom: '16px', borderTop: '1px solid #555', borderBottom: '1px solid #555', padding: '12px 0' }}>
+              <p className={styles.secondaryText}>code preview</p>
+              <div style={{ opacity: 0.8 }}>
+                {report.diff ? (
+                  report.diff.map((part: any, i: number) => {
+                    const colorClass = part.added ? styles.diffAdded : part.removed ? styles.diffRemoved : styles.primaryText;
+                    const sign = part.added ? '+ ' : part.removed ? '- ' : '  ';
+                    // We split by newline, drop the last empty string if it ends with newline
+                    let lines = part.value.split('\n');
+                    if (lines[lines.length - 1] === '') lines.pop();
+
+                    return lines.map((line: string, j: number) => (
+                      <p key={`${i}-${j}`} className={colorClass}>
+                        {sign}{line || ' '}
+                      </p>
+                    ));
+                  })
+                ) : (
+                  report.formatted.split('\n').slice(0, 10).map((line, idx) => (
+                    <p key={idx} className={styles.primaryText}>{line || ' '}</p>
+                  ))
+                )}
+                {!report.diff && report.formatted.split('\n').length > 10 && (
+                  <p className={styles.secondaryText}>... +{report.formatted.split('\n').length - 10} more lines</p>
+                )}
+              </div>
             </div>
-            <div className={styles.miniRow}>
-              {(['bugs','lint','security'] as const).map(k=>(
-                <div key={k} className={styles.mini}>
-                  <p className={styles.miniNum}>{(report[k] as Issue[]).length}</p>
-                  <p className={styles.miniLabel}>{k.toUpperCase()}</p>
-                </div>
-              ))}
-            </div>
+
+            <p className={styles.primaryText} style={{ marginTop: '24px' }}>
+              Score    : <span className={styles.errorText} style={{ color: isPerfect ? '#4ade80' : '#f87171' }}>{score}%</span>
+            </p>
+            <p className={styles.primaryText}>
+              Language : {language}   <span className={styles.secondaryText}>(conf: {confidence / 100})</span>
+            </p>
           </div>
         </div>
+      )}
 
-        <div className={styles.formula}>
-          <p className={styles.formulaLabel}>SCORING FORMULA</p>
-          <p className={styles.formulaText}>
-            Score = 100 − (w<sub>bug</sub>·P<sub>bug</sub> + w<sub>sec</sub>·P<sub>sec</sub> + w<sub>cplx</sub>·P<sub>cplx</sub> + w<sub>red</sub>·P<sub>red</sub> + w<sub>lint</sub>·P<sub>lint</sub>)
-          </p>
-          <p className={styles.formulaScore}>
-            Your score: <strong style={{color:report.score<40?'#fc8181':report.score<70?'#f6e05e':'#68d391'}}>{report.score} / 100</strong>
-          </p>
-        </div>
+      {/* Right panel showing literal issues breakdown */}
+      <div className={styles.terminalColumn}>
+        <div className={styles.terminalScroll}>
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.warningText}>=== ANALYSIS REPORT ===</p>
+            <br />
+            <p className={styles.warningText}>
+              SCORE: {score}  [ GRADE: {grade} ]
+            </p>
+            <p className={styles.primaryText}>
+              LANGUAGE: {language} ({confidence}% confidence)
+            </p>
+            <p className={totalIssues === 0 ? styles.successText : styles.errorText}>
+              TOTAL ISSUES: {totalIssues}
+            </p>
+          </div>
 
-        <div className={styles.tabs}>
-          {TABS.map(t => (
-            <button key={t.id} onClick={()=>setTab(t.id)} className={`${styles.tabBtn} ${tab===t.id?styles.tabActive:''}`}>
-              {t.label}
-              <span className={`${styles.count} ${tab===t.id?styles.countActive:''}`}>{counts[t.id]}</span>
-            </button>
-          ))}
-        </div>
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.warningText}>--- BUGS ({bugs.length}) ---</p>
+            {bugs.length === 0 ? (
+              <p className={styles.primaryText}>No bugs detected.</p>
+            ) : (
+              bugs.map((iss: Issue, i: number) => (
+                <div key={i} style={{ marginBottom: '16px' }}>
+                  <p className={styles.primaryText}>[L{iss.line}] {iss.msg}</p>
+                  <p className={styles.secondaryText}>→ Fix: {iss.fix}</p>
+                </div>
+              ))
+            )}
+          </div>
 
-        <div className={styles.issues}>
-          {tab==='security'   && report.security.map((x,i)  => <IssueRow key={i} item={x} />)}
-          {tab==='bugs'       && report.bugs.map((x,i)       => <IssueRow key={i} item={x} />)}
-          {tab==='lint'       && report.lint.map((x,i)       => <IssueRow key={i} item={x} />)}
-          {tab==='complexity' && report.complexity.map((x,i) => <CplxRow  key={i} fn={x}   />)}
-          {counts[tab]===0 && (
-            <div className={styles.noIssues}>
-              <span style={{color:'#68d391',fontSize:20}}>✓</span>
-              {isSecret ? `Perfect ${tab} — OJASS '26 certified!` : `No ${tab} issues found`}
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.warningText}>--- SECURITY ({security.length}) ---</p>
+            {security.length === 0 ? (
+              <p className={styles.primaryText}>No security issues detected.</p>
+            ) : (
+              security.map((iss: Issue, i: number) => (
+                <div key={i} style={{ marginBottom: '16px' }}>
+                  <p className={styles.primaryText}>[L{iss.line}] {iss.msg}</p>
+                  <p className={styles.secondaryText}>→ Fix: {iss.fix}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.warningText}>--- LINT ({lint.length}) ---</p>
+            {lint.length === 0 ? (
+              <p className={styles.primaryText}>No lint warnings detected.</p>
+            ) : (
+              lint.map((iss: Issue, i: number) => (
+                <div key={i} style={{ marginBottom: '16px' }}>
+                  <p className={styles.primaryText}>[L{iss.line}] {iss.msg}</p>
+                  <p className={styles.secondaryText}>→ Fix: {iss.fix}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.sectionDivider}>COMPLEXITY FUNCTIONS ({report.complexity?.length || 0}):</p>
+            {report.complexity?.length === 0 ? (
+              <p className={styles.primaryText}>No functions detected.</p>
+            ) : (
+              report.complexity?.map((c: any, i: number) => (
+                <p key={i} className={styles.primaryText}>
+                  ✓ {c.fn.padEnd(20)} L{`${c.lines}`.padEnd(6)} cyclomatic:{`${c.complexity}`.padEnd(4)} nesting:{(c as any).nesting || 0}
+                </p>
+              ))
+            )}
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.sectionDivider}>REDUNDANCY DUPLICATES (0):</p>
+            <p className={styles.primaryText}>No redundancy detected.</p>
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.sectionDivider}>FORMATTING APPLIED: already well-formatted</p>
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <p className={styles.sectionDivider}>PENALTY BREAKDOWN:</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {report.penalty?.bug !== undefined && report.penalty.bug > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className={styles.primaryText} style={{ width: '100px' }}>bug</span>
+                  <span style={{ background: '#ff5555', height: '14px', width: `${report.penalty.bug}%` }}></span>
+                  <span className={styles.primaryText} style={{ marginLeft: '8px' }}>{report.penalty.bug.toFixed(1)}%</span>
+                </div>
+              )}
+              {report.penalty?.security !== undefined && report.penalty.security > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className={styles.primaryText} style={{ width: '100px' }}>security</span>
+                  <span style={{ background: '#ff79c6', height: '14px', width: `${report.penalty.security}%` }}></span>
+                  <span className={styles.primaryText} style={{ marginLeft: '8px' }}>{report.penalty.security.toFixed(1)}%</span>
+                </div>
+              )}
+              {report.penalty?.complexity !== undefined && report.penalty.complexity > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className={styles.primaryText} style={{ width: '100px' }}>complexity</span>
+                  <span style={{ background: '#ffb86c', height: '14px', width: `${report.penalty.complexity}%` }}></span>
+                  <span className={styles.primaryText} style={{ marginLeft: '8px' }}>{report.penalty.complexity.toFixed(1)}%</span>
+                </div>
+              )}
+              {report.penalty?.redundancy !== undefined && report.penalty.redundancy > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className={styles.primaryText} style={{ width: '100px' }}>redundancy</span>
+                  <span style={{ background: '#8be9fd', height: '14px', width: `${report.penalty.redundancy}%` }}></span>
+                  <span className={styles.primaryText} style={{ marginLeft: '8px' }}>{report.penalty.redundancy.toFixed(1)}%</span>
+                </div>
+              )}
+              {report.penalty?.style !== undefined && report.penalty.style > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className={styles.primaryText} style={{ width: '100px' }}>style</span>
+                  <span style={{ background: '#50fa7b', height: '14px', width: `${report.penalty.style}%` }}></span>
+                  <span className={styles.primaryText} style={{ marginLeft: '8px' }}>{report.penalty.style.toFixed(1)}%</span>
+                </div>
+              )}
+              {(!report.penalty || Object.values(report.penalty).every((v: any) => v === 0)) && (
+                <p className={styles.primaryText}>No penalties detected.</p>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

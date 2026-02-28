@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import StarField from '@/components/StarField';
-import ConstellationGrid from '@/components/ConstellationGrid';
+import DarkVeil from '@/components/DarkVeil';
 import NavBar from '@/components/NavBar';
 import KonamiExplosion from '@/components/KonamiExplosion';
 import HiddenPixelModal from '@/components/HiddenPixelModal';
@@ -10,14 +9,14 @@ import { useKonamiCode, useSecretWord } from '@/lib/easterEggs';
 import styles from './page.module.css';
 
 const FEATURES = [
-  { label:'Language Detection',      pts:'3/20', desc:'Auto-detect from syntax & extension. 4+ languages. Confidence score.' },
-  { label:'Bug & Lint Detection',    pts:'4/20', desc:'Null deref, off-by-one, unused vars, type coercions, naming violations.' },
-  { label:'Security Analysis',       pts:'4/20', desc:'SQLi, XSS, hardcoded secrets, eval/exec, CVE/OSV live feed.' },
-  { label:'Complexity & Redundancy', pts:'4/20', desc:'Cyclomatic complexity, deep nesting, duplicate blocks, dead code.' },
-  { label:'Auto-Formatting & Diff',  pts:'2/20', desc:'Non-destructive format with unified diff: original vs formatted.' },
-  { label:'API Quality & Web Demo',  pts:'3/20', desc:'Configurable weights, plugin system, history graph, score badge.' },
+  { label: 'Language Detection', pts: '3/20', desc: 'Auto-detect from syntax & extension. 4+ languages. Confidence score.' },
+  { label: 'Bug & Lint Detection', pts: '4/20', desc: 'Null deref, off-by-one, unused vars, type coercions, naming violations.' },
+  { label: 'Security Analysis', pts: '4/20', desc: 'SQLi, XSS, hardcoded secrets, eval/exec, CVE/OSV live feed.' },
+  { label: 'Complexity & Redundancy', pts: '4/20', desc: 'Cyclomatic complexity, deep nesting, duplicate blocks, dead code.' },
+  { label: 'Auto-Formatting & Diff', pts: '2/20', desc: 'Non-destructive format with unified diff: original vs formatted.' },
+  { label: 'API Quality & Web Demo', pts: '3/20', desc: 'Configurable weights, plugin system, history graph, score badge.' },
 ];
-const STACK = ['Next.js 14','TypeScript','Node.js','ESLint API','Semgrep','OSV Feed','OpenAI API','WebSockets'];
+const STACK = ['Next.js 14', 'TypeScript', 'Node.js', 'ESLint API', 'Semgrep', 'OSV Feed', 'OpenAI API', 'WebSockets'];
 
 export default function HomePage() {
 
@@ -26,7 +25,7 @@ export default function HomePage() {
   useKonamiCode(useCallback(() => setShowKonami(true), []));
 
   // 🥚 EGG 2: Logo × 5 clicks
-  const [clicks, setClicks]       = useState(0);
+  const [clicks, setClicks] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -72,9 +71,18 @@ export default function HomePage() {
 
   return (
     <div className={styles.page}>
-      <StarField golden={golden} />
-      <ConstellationGrid golden={golden} />
-      <div className={styles.glowCenter} style={golden ? { background:'radial-gradient(circle, rgba(246,224,94,0.05) 0%, transparent 65%)' } : {}} />
+      <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+        <DarkVeil
+          hueShift={0}
+          noiseIntensity={0}
+          scanlineIntensity={0}
+          speed={2}
+          scanlineFrequency={0}
+          warpAmount={0}
+        />
+      </div>
+
+      <div className={styles.glowCenter} style={golden ? { background: 'radial-gradient(circle, rgba(246,224,94,0.05) 0%, transparent 65%)' } : {}} />
       <div className={styles.glowLeft} />
 
       {showKonami && <KonamiExplosion onClose={() => setShowKonami(false)} />}
@@ -91,7 +99,7 @@ export default function HomePage() {
 
       {clicks > 0 && clicks < 5 && (
         <div className={styles.dots}>
-          {Array.from({length:5},(_,i) => (
+          {Array.from({ length: 5 }, (_, i) => (
             <span key={i} className={`${styles.dot} ${i < clicks ? styles.dotOn : ''}`} />
           ))}
         </div>
@@ -117,31 +125,44 @@ export default function HomePage() {
 
           <div className={`${styles.teamBlock} fade-up-1`}>
             <div className={styles.orbitRing}>
-              <div className={styles.orbitCore}>D</div>
               <div className={styles.orbitDot} />
             </div>
             <div>
               <p className={styles.teamLabel}>PRESENTING</p>
               <h1 className={styles.teamName}>
-                <span className={`${styles.teamAccent} ${golden ? styles.teamAccentGold : ''}`}>Day</span>dream
+                <span className={`${styles.teamAccent} ${golden ? styles.teamAccentGold : ''}`}>Aegis</span>Engine
               </h1>
+              <p className={styles.teamSubText}>made with love by team Daydreams</p>
             </div>
           </div>
 
           <div className={styles.divider} />
 
-          <div className={`${styles.card} fade-up-2`}>
+          <div className={`${styles.ctaRow} fade-up-2`} style={{ marginTop: '20px', marginBottom: '60px' }}>
+            <Link href="/demo" className={styles.cta}>
+              <span>LAUNCH ANALYSER</span>
+              <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+            <div className={styles.ctaNote}>
+              <span className={styles.ctaDot} />
+              Live demo available — no install required
+            </div>
+          </div>
+
+          <div className={`${styles.card} fade-up-3`}>
             <div className={styles.cardTop} />
             <div className={styles.cardHead}>
               <div className={styles.cardIcon}>
                 <svg viewBox="0 0 40 40" fill="none" width="26" height="26">
-                  <circle cx="20" cy="20" r="18" stroke="var(--cyan)" strokeWidth="1.5" strokeDasharray="4 3"/>
-                  <circle cx="20" cy="20" r="10" stroke="var(--cyan)" strokeWidth="1" opacity="0.5"/>
-                  <circle cx="20" cy="20" r="3"  fill="var(--cyan)"/>
-                  <line x1="20" y1="2"  x2="20" y2="10" stroke="var(--cyan)" strokeWidth="1.5"/>
-                  <line x1="20" y1="30" x2="20" y2="38" stroke="var(--cyan)" strokeWidth="1.5"/>
-                  <line x1="2"  y1="20" x2="10" y2="20" stroke="var(--cyan)" strokeWidth="1.5"/>
-                  <line x1="30" y1="20" x2="38" y2="20" stroke="var(--cyan)" strokeWidth="1.5"/>
+                  <circle cx="20" cy="20" r="18" stroke="var(--cyan)" strokeWidth="1.5" strokeDasharray="4 3" />
+                  <circle cx="20" cy="20" r="10" stroke="var(--cyan)" strokeWidth="1" opacity="0.5" />
+                  <circle cx="20" cy="20" r="3" fill="var(--cyan)" />
+                  <line x1="20" y1="2" x2="20" y2="10" stroke="var(--cyan)" strokeWidth="1.5" />
+                  <line x1="20" y1="30" x2="20" y2="38" stroke="var(--cyan)" strokeWidth="1.5" />
+                  <line x1="2" y1="20" x2="10" y2="20" stroke="var(--cyan)" strokeWidth="1.5" />
+                  <line x1="30" y1="20" x2="38" y2="20" stroke="var(--cyan)" strokeWidth="1.5" />
                 </svg>
               </div>
               <div>
@@ -164,7 +185,7 @@ export default function HomePage() {
 
             <div className={styles.featureGrid}>
               {FEATURES.map((f, i) => (
-                <div key={f.label} className={`${styles.feature} fade-up-${Math.min(i+3,6)}`}>
+                <div key={f.label} className={`${styles.feature} fade-up-${Math.min(i + 4, 6)}`}>
                   <div className={styles.featureTop}>
                     <span className={styles.featureHex}>⬡</span>
                     <span className={styles.featurePts}>{f.pts}</span>
@@ -182,20 +203,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-
-          <div className={`${styles.ctaRow} fade-up-6`}>
-            <Link href="/demo" className={styles.cta}>
-              <span>LAUNCH ANALYSER</span>
-              <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
-                <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-            <div className={styles.ctaNote}>
-              <span className={styles.ctaDot} />
-              Live demo available — no install required
-            </div>
-          </div>
-
         </section>
       </main>
 
