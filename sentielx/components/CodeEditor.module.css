@@ -1,0 +1,19 @@
+.editor   { display:flex; flex-direction:column; height:100%; background:rgba(5,8,16,0.7); }
+.chrome   { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid var(--border); background:rgba(0,0,0,0.4); flex-shrink:0; }
+.dots     { display:flex; gap:6px; }
+.dot      { width:10px; height:10px; border-radius:50%; }
+.red      { background:#fc8181; opacity:0.7; }
+.yellow   { background:#f6e05e; opacity:0.7; }
+.green    { background:#68d391; opacity:0.7; }
+.filename  { flex:1; font-family:var(--font-mono); font-size:11px; color:var(--muted); letter-spacing:0.05em; }
+.langBadge { font-family:var(--font-mono); font-size:10px; color:var(--cyan); background:rgba(99,179,237,0.08); border:1px solid var(--border); padding:1px 7px; border-radius:4px; letter-spacing:0.08em; }
+.body     { flex:1; display:flex; overflow:auto; }
+.lineNums { display:flex; flex-direction:column; padding:14px 0; min-width:44px; background:rgba(0,0,0,0.15); border-right:1px solid var(--border); user-select:none; flex-shrink:0; }
+.lineNum  { font-family:var(--font-mono); font-size:12px; line-height:1.7; color:var(--dim); text-align:right; padding:0 10px 0 6px; }
+.textarea {
+  flex:1; background:transparent; border:none; outline:none; resize:none;
+  font-family:var(--font-mono); font-size:13px; line-height:1.7;
+  color:rgba(226,212,175,0.9); padding:14px 16px;
+  caret-color:var(--cyan); tab-size:2; white-space:pre; overflow-wrap:normal;
+}
+.textarea::selection { background:rgba(99,179,237,0.2); }

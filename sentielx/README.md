@@ -34,3 +34,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+# CodeDream — Hack de Science · Ojass '26
+
+> **Problem 2: Code Quality Review (npm Package)**
+> Team **Daydream** · NIT Jamshedpur
+
+## Quick Start
+
+npm install
+npm run dev
+→ http://localhost:3000
+
+---
+
+## 🥚 Easter Eggs
+
+| # | Name                 | Trigger                                      | Page    |
+|---|----------------------|----------------------------------------------|---------|
+| 1 | Konami Code          | ↑↑↓↓←→←→BA on keyboard                      | Both    |
+| 2 | Logo Click × 5       | Click navbar logo 5 times fast               | /       |
+| 3 | Console ASCII Art    | Open browser DevTools console                | Both    |
+| 4 | Golden Mode          | Type `ojass26` globally (not in input)       | /       |
+| 5 | Hidden Pixel         | Click invisible 4×4 pixel, bottom-right      | /       |
+| 6 | Perfect Score        | Type `ojass26` in the code editor → Analyse  | /demo   |
+
+All eggs include a shout-out to **OJASS '26 — Hack de Science, NIT Jamshedpur**.
+Built with 💙 by Team Daydream.
