@@ -62,3 +62,26 @@ npm run dev
 
 All eggs include a shout-out to **OJASS '26 — Hack de Science, NIT Jamshedpur**.
 Built with 💙 by Team Daydream.
+
+
+🥚 Easter Eggs
+
+All eggs include a shout-out to OJASS '26 — Hack de Science, NIT Jamshedpur.
+Built with 💙 by Team Daydream.
+
+Easter Egg List
+#	Name	Trigger	Page
+1	Konami Code	↑↑↓↓←→←→BA on keyboard	Both
+2	Logo Click × 5	Click navbar logo 5 times fast	/
+3	Console ASCII Art	Open browser DevTools console	Both
+4	Golden Mode	Type ojass26 globally (not in input)	/
+5	Hidden Pixel	Click invisible 4×4 pixel, bottom-right	/
+6	Perfect Score	Type ojass26 in the code editor → Analyse	/demo
+✨ Egg Trigger → Effect
+#	Trigger	Effect
+1	Konami Code	80-particle explosion + full-screen OJASS '26 rainbow modal
+2	Logo × 5	Progress dots appear → gold toast slides in
+3	Console Art	OJASS ASCII banner + hints for all other eggs
+4	Golden Mode	Entire site turns gold — stars, grid, accents
+5	Hidden Pixel	Secret modal with quote & OJASS dedication
+6	Perfect Score	Language becomes OjassScript, score 100/100 A+
