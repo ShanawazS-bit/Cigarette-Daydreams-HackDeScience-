@@ -1,0 +1,108 @@
+.nav {
+  position: relative;
+  z-index: 50;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(5, 8, 16, 0.88);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.8s;
+}
+
+.navGolden {
+  border-bottom-color: rgba(246, 224, 94, 0.3) !important;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(99, 179, 237, 0.05);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  transition: all 0.8s;
+}
+
+.logoIconGolden {
+  background: rgba(246, 224, 94, 0.08) !important;
+  border-color: rgba(246, 224, 94, 0.3) !important;
+  color: var(--gold) !important;
+}
+
+.logoText {
+  font-family: var(--font-offbit);
+  font-size: 17px;
+  background: linear-gradient(135deg, #008080, #00ffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logoAccent {
+  color: #E6F1FF;
+  transition: color 0.8s;
+}
+
+.logoAccentGolden {
+  color: var(--gold) !important;
+}
+
+.logoBadge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  background: rgba(104, 211, 145, 0.08);
+  border: 1px solid rgba(104, 211, 145, 0.25);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.tab {
+  padding: 6px 18px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--white);
+}
+
+.tabActive {
+  background: rgba(99, 179, 237, 0.12);
+  color: var(--cyan) !important;
+  border: 1px solid rgba(99, 179, 237, 0.25);
+}
+
+.eventTag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.08em;
+}
