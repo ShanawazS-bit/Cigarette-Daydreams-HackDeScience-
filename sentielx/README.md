@@ -64,7 +64,7 @@ All eggs include a shout-out to **OJASS '26 — Hack de Science, NIT Jamshedpur*
 Built with 💙 by Team Daydream.
 
 
-🥚 Easter Eggs
+🥚 Easter Eggs:
 
 All eggs include a shout-out to OJASS '26 — Hack de Science, NIT Jamshedpur.
 Built with 💙 by Team Daydream.
